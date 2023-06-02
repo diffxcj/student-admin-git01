@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.tlh.mapper.IEducatorMapper">
+    <insert id="add" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into m_teacher(
+            un,name,sex,age,dirPath,course,phone,state,rank_id,parent_id
+        )values (
+                    #{un},#{name},#{sex},#{age},#{dirPath},#{course},#{phone},#{state},#{rank.id},#{parent.id}
+                )
+    </insert>
+    <update id="update">
+        update m_teacher set
+                                un=#{un},name=#{name},sex=#{sex},age=#{age},dirPath=#{dirPath},course=#{course},phone=#{phone},state=#{state},
+                                rank_id=#{rank.id},parent_id=#{parent.id}
+        where id=#{id}
+    </update>
+    <delete id="deleteById">
+        delete from m_teacher where id=#{id}
+    </delete>
+    <delete id="batchDelete">
+        delete from m_teacher where id in
+        <foreach collection="list" separator="," item="id" open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="selectAll" resultType="org.tlh.domain.Educator">
+        select * from m_teacher
+    </select>
+    <select id="selectById" resultType="org.tlh.domain.Educator">
+        select * from m_teacher where id=#{id}
+    </select>
+    <select id="selectByPage" resultMap="EducatorMap">
+        SELECT
+        d.*,
+        e.id eid,e.grade,
+        d1.id did,d1.name dname
+        FROM m_teacher d
+        LEFT JOIN m_salary e ON d.rank_id=e.id
+        LEFT JOIN m_teacher d1 ON d.parent_id=d1.id
+        <include refid="whereSQL"></include>
+        limit #{start},#{pageSize}
+    </select>
+    <resultMap id="EducatorMap" type="Educator">
+        <id column="id" property="id"></id>
+        <result column="un" property="un"></result>
+        <result column="name" property="name"></result>
+        <result column="sex" property="sex"></result>
+        <result column="age" property="age"></result>
+        <result column="dirPath" property="dirPath"></result>
+        <result column="course" property="course"></result>
+        <result column="phone" property="phone"></result>
+        <result column="state" property="state"></result>
+        <result column="rank_id" property="rank_id"></result>
+        <result column="parent_id" property="parent_id"></result>
+        <association property="rank" javaType="Salary">
+            <id column="eid" property="id"></id>
+            <result column="grade" property="grade"></result>
+        </association>
+        <association property="parent" javaType="Educator">
+            <id column="did" property="id"></id>
+            <result column="dname" property="name"></result>
+        </association>
+    </resultMap>
+    <select id="count" resultType="java.lang.Long">
+        select count(id) from m_teacher d
+        <include refid="whereSQL"></include>
+    </select>
+    <sql id="whereSQL">
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                d.name like concat('%',#{keyword},'%')
+            </if>
+        </where>
+    </sql>
+</mapper>

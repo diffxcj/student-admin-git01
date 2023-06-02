@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ApifoxUploaderProjectSetting">
+    <option name="apifoxAccessToken" value="APS-m3k6pb9J3I37eOUMavl1hWPIRXbRbRIy" />
+    <option name="apifoxApiOverwriteMode" value="覆盖所有字段" />
+    <option name="apifoxProjectIds">
+      <array>
+        <option value="# ModuleName:ProjectID" />
+        <option value="pet-home-admin:2818856,学生后台管理try" />
+      </array>
+    </option>
+    <option name="yapiTokens" value="" />
+  </component>
+</project>

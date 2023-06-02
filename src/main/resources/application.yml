@@ -1,0 +1,19 @@
+server:
+  port: 8080
+#数据源配置
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql:///student
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#mybatis配置
+mybatis:
+  mapper-locations: classpath:org/tlh/*/mapper/*Mapper.xml #可以不配置
+  type-aliases-package: org.tlh.domain,org.tlh.query
+
+#日志
+logging:
+  level:
+    org:
+      tlh: debug

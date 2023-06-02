@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.tlh.mapper.IGradeMapper">
+    <insert id="add">
+        insert into s_grade(
+           sid,gname,sex,sclass,scourse_id,grade,manager_id
+        )values (
+       #{sid},#{gname},#{sex},#{sclass},#{scourse.id},#{grade},#{manager.id}
+                        )
+    </insert>
+    <update id="update">
+        update s_grade set
+        sid=#{sid},gname=#{gname},sex=#{sex},sclass=#{sclass},scourse_id=#{scourse.id},grade=#{grade},manager_id=#{manager.id}
+        where id=#{id}
+    </update>
+    <delete id="deleteById">
+        delete from s_grade where id=#{id}
+    </delete>
+    <delete id="batchDelete">
+        delete from s_grade where id in
+        <foreach collection="list" separator="," item="id" open="(" close=")">
+        #{id}
+        </foreach>
+    </delete>
+    <select id="selectAll" resultType="org.tlh.domain.Grade">
+        select * from s_grade
+    </select>
+    <select id="selectById" resultType="org.tlh.domain.Grade">
+        select * from s_grade where id=#{id}
+    </select>
+    <select id="selectByPage" resultMap="GradeMap">
+        SELECT
+        g.*,
+        c.id cid,c.name,
+        g1.id gid,g1.gname ggname
+        FROM s_grade g
+        LEFT JOIN course c ON g.scourse_id=c.id
+        LEFT JOIN s_grade g1 ON g.manager_id=g1.id
+        <include refid="gradeSQL"></include>
+        limit #{start},#{pageSize}
+    </select>
+    <resultMap id="GradeMap" type="Grade">
+        <id column="id" property="id"></id>
+        <result column="sid" property="sid"></result>
+        <result column="gname" property="gname"></result>
+        <result column="sex" property="sex"></result>
+        <result column="sclass" property="sclass"></result>
+        <result column="scourse_id" property="scourse_id"></result>
+        <result column="grade" property="grade"></result>
+        <result column="manager_id" property="manager_id"></result>
+        <association property="scourse" javaType="Course">
+            <id column="cid" property="id"></id>
+            <result column="name" property="name"></result>
+        </association>
+        <association property="manager" javaType="Grade">
+            <id column="gid" property="id"></id>
+            <result column="ggname" property="gname"></result>
+        </association>
+    </resultMap>
+    <select id="count" resultType="java.lang.Long">
+        select count(id) from s_grade g
+        <include refid="gradeSQL"></include>
+    </select>
+    <sql id="gradeSQL">
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                g.gname like concat('%',#{keyword},'%')
+            </if>
+        </where>
+    </sql>
+</mapper>

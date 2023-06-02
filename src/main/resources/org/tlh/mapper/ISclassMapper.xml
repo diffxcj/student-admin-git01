@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.tlh.mapper.ISclassMapper">
+    <insert id="add">
+        insert into sclass(
+            name,size,monitor,instructor
+        )values (#{name},#{size},#{monitor},#{instructor})
+    </insert>
+
+    <update id="update">
+        update sclass set
+            name=#{name},size=#{size},monitor=#{monitor},instructor=#{instructor}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from sclass where id=#{id}
+    </delete>
+
+    <delete id="batchDelete">
+        delete from sclass where id in
+        <foreach collection="list" separator="," item="id" open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAll" resultType="org.tlh.domain.Sclass">
+        select * from sclass
+    </select>
+
+    <select id="selectById" resultType="org.tlh.domain.Sclass">
+        select * from sclass where id=#{id}
+    </select>
+
+    <select id="selectByPage" resultType="org.tlh.domain.Sclass">
+        select * from sclass
+        <include refid="whereSQL"></include>
+        limit #{start},#{pageSize}
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        select count(id) from sclass
+        <include refid="whereSQL"></include>
+    </select>
+
+    <sql id="whereSQL">
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                name like concat('%',#{keyword},'%')
+            </if>
+        </where>
+    </sql>
+</mapper>

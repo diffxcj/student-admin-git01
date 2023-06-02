@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.tlh.mapper.ICourseMapper">
+    <insert id="add">
+        insert into course(
+            sn,name,teacher,classification,state
+        )values (
+                    #{sn},#{name},#{teacher},#{classification},#{state}
+                )
+    </insert>
+    <update id="update">
+        update course set
+         sn=#{sn},name=#{name},teacher=#{teacher},classification=#{classification},
+           state=#{state}
+        where id=#{id}
+    </update>
+    <delete id="deleteById">
+        delete from course where id=#{id}
+    </delete>
+    <delete id="batchDelete">
+        delete from course where id in
+        <foreach collection="list" separator="," item="id" open="(" close= ")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="selcetAll" resultType="org.tlh.domain.Course">
+        select * from course
+    </select>
+    <select id="selectById" resultType="org.tlh.domain.Course">
+        select * from course where id=#{id}
+    </select>
+    <select id="selectByPage" resultType="org.tlh.domain.Course">
+        select *from course
+        <include refid="whereSQL"></include>
+        limit #{start},#{pageSize}
+    </select>
+    <select id="count" resultType="java.lang.Long">
+        select count(id) from course
+        <include refid="whereSQL"></include>
+    </select>
+    <sql id="whereSQL">
+        <where>
+            <if test="keyword!=null and keyword!=''">
+               name like concat('%',#{keyword},'%')
+            </if>
+        </where>
+    </sql>
+</mapper>
